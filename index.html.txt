@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Ders Rehberi — Küçük adımlar, büyük keşifler</title>
+    <meta name="description" content="1–12. sınıflar için kişisel çalışma alanın. Dersleri keşfet, konu anlatımlarıyla öğren, mini testlerle bilgini pekiştir."/>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --sidebar-bg: #1e293b;
+            --text-color: #f8fafc;
+            --text-muted: #94a3b8;
+            --primary: #38bdf8;
+            --accent: #f59e0b;
+            --card-bg: #1e293b;
+            --border-color: #334155;
+            --success: #10b981;
+            --error: #ef4444;
+        }
+        html[data-theme="light"] {
+            --bg-color: #f8fafc;
+            --sidebar-bg: #ffffff;
+            --text-color: #0f172a;
+            --text-muted: #64748b;
+            --primary: #0284c7;
+            --accent: #d97706;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-color); transition: all 0.3s; display: flex; min-height: 100vh; }
+        .app-shell { display: flex; width: 100%; }
+        
+        .sidebar { width: 260px; background-color: var(--sidebar-bg); border-right: 1px solid var(--border-color); padding: 24px; display: flex; flex-direction: column; justify-content: space-between; height: 100vh; position: fixed; }
+        .brand { font-size: 20px; font-weight: bold; color: var(--text-color); text-decoration: none; display: flex; align-items: center; gap: 8px; margin-bottom: 24px; }
+        .workspace-label { font-size: 11px; font-weight: 700; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 16px; }
+        .main-nav button { display: flex; align-items: center; gap: 12px; width: 100%; background: none; border: none; padding: 12px; color: var(--text-muted); border-radius: 8px; cursor: pointer; text-align: left; font-size: 14px; margin-bottom: 4px; transition: 0.2s; }
+        .main-nav button.active { background-color: var(--primary); color: white; font-weight: 600; }
+        
+        .workspace { margin-left: 260px; flex: 1; padding: 32px; min-width: 0; }
+        .topbar { display: flex; justify-content: space-between; align-items: center; padding-bottom: 24px; border-bottom: 1px solid var(--border-color); margin-bottom: 32px; }
+        .breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text-muted); }
+        .topbar-actions { display: flex; align-items: center; gap: 16px; }
+        .theme-toggle { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-color); padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 13px; font-weight: 600; }
+        
+        .student-profile { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+        .profile-avatar { width: 32px; height: 32px; background-color: var(--accent); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        
+        /* Dinamik Listeleme Alanları */
+        .scroll-x { display: flex; overflow-x: auto; gap: 8px; padding-bottom: 12px; margin-bottom: 24px; }
+        .badge { background: var(--card-bg); border: 1px solid var(--border-color); padding: 10px 18px; border-radius: 20px; cursor: pointer; color: var(--text-color); font-weight: 600; white-space: nowrap; transition: 0.2s; }
+        .badge.active { background: var(--accent); color: white; border-color: var(--accent); }
+        
+        .flex-wrap { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+        .ders-btn { background: var(--card-bg); border: 1px solid var(--border-color); padding: 12px 18px; border-radius: 10px; cursor: pointer; color: var(--text-color); font-weight: bold; transition: 0.2s; }
+        .ders-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+        
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 100%)); gap: 16px; }
+        .card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 20px; border-radius: 12px; }
+        .card h3 { font-size: 18px; margin-bottom: 6px; color: var(--primary); }
+        .card p { font-size: 14px; color: var(--text-muted); margin-bottom: 16px; }
+        
+        .btn-group { display: flex; gap: 10px; }
+        .btn { flex: 1; padding: 12px; border: none; border-radius: 8px; color: white; font-weight: bold; font-size: 13px; cursor: pointer; text-align: center; }
+        .btn-test { background-color: var(--success); }
+        .btn-video { background-color: var(--error); }
+        
+        .video-player { background: #000000; border: 1px solid #334155; padding: 20px; border-radius: 8px; margin-bottom: 16px; text-align: center; display: none; }
+        .video-player h4 { color: white; margin-bottom: 4px; font-size: 14px; }
+        .video-player p { color: var(--accent); font-size: 12px; margin-bottom: 16px; }
+        .player-controls { display: flex; justify-content: center; gap: 10px; }
+        .control-btn { background: #334155; border: none; color: white; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: bold; }
+        .control-btn.play { background: var(--success); }
+    </style>
+</head>
+<body>
+
+    <div class="app-shell">
+        <aside class="sidebar">
+            <div>
+                <a class="brand" href="#">
+                    <span class="brand-mark">📚</span>
+                    <span>Ders<span>Rehberi</span></span>
+                </a>
+                <div class="workspace-label">KİŞİSEL ÇALIŞMA ALANIN</div>
+                <nav class="main-nav">
+                    <button class="active"><span>Keşfet</span></button>
+                    <button onclick="alert('Mini Test Modülü Aktif!')"><span>Mini testler</span></button>
+                    <button onclick="alert('Kaydedilenler Alanı Boş')"><span>Kaydedilenler</span></button>
+                    <button onclick="alert('İlerleme Durumu: %100')"><span>İlerlemem</span></button>
+                </nav>
+            </div>
+            <div class="sidebar-bottom">
+                <div class="workspace-label" style="margin: 0; font-size: 10px;">Senin hızın, senin yolculuğun.</div>
+            </div>
+        </aside>
+
+        <div class="workspace">
+            <header class="topbar">
+                <div class="breadcrumb">
+                    <span>🎓 Çalışma alanım</span> ➡️ <strong>Keşfet</strong>
+                </div>
+                <div class="topbar-actions">
+                    <button class="theme-toggle" onclick="toggleTheme()">
+                        <span>🌓 Temayı Değiştir</span>
+                    </button>
+                    <div class="student-profile">
+                        <span class="profile-avatar">Ö</span>
+                        <div>
+                            <strong>Merhaba, Öğrenci!</strong>
+                            <span id="profile-text">1. Sınıf · Çalışmaya hazır</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <main id="main-content">
+                <div style="margin-bottom: 32px;">
+                    <h1 style="font-size: 28px; margin-bottom: 8px;">Bugün yeni bir şey keşfet.</h1>
+                    <p style="color: var(--text-muted);">Tüm kademe konuları ve yerleşik video dersleri eksiksiz yüklenmiştir.</p>
+                </div>
+
+                <h2 style="font-size: 16px; margin-bottom: 12px; font-weight: bold;">🎓 Kademeler (Anaokulu Hariç Tüm Sınıflar):</h2>
+                <div class="scroll-x" id="grades-container"></div>
+
+                <h2 style="font-size: 16px; margin-bottom: 12px; font-weight: bold;">📚 Ders Listesi:</h2>
+                <div class="flex-wrap" id="subjects-container"></div>
+
+                <h2 style="font-size: 16px; margin-bottom: 12px; font-weight: bold;">📝 Üniteler, Dahili Videolar ve Sınavlar:</h2>
+                <div class="card-grid" id="topics-container"></div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        const GRADES = ['1. Sınıf', '2. Sınıf', '3. Sınıf', '4. Sınıf', '5. Sınıf', '6. Sınıf', '7. Sınıf', '8. Sınıf', '9. Sınıf', '10. Sınıf', '11. Sınıf', '12. Sınıf'];
+        const SUBJECTS = {
+            primary: [
+                { name: 'Matematik', topics: ['Doğal Sayılar', 'Toplama ve Çıkarma', 'Geometrik Şekiller', 'Ölçme ve Zaman', 'Kesirler Giriş', 'Veri Toplama', 'Sıvı Ölçme'] },
+                { name: 'Türkçe', topics: ['Okuduğunu Anlama', 'Sözcük Bilgisi', 'Cümle Bilgisi', 'Yazım Kuralları', 'Noktalama İşaretleri'] },
+                { name: 'Hayat Bilgisi', topics: ['Okulumuzda Hayat', 'Evimizde Hayat', 'Sağlıklı Hayat', 'Güvenli Hayat', 'Ülkemizde Hayat'] }
+            ],
+            middle: [
+                { name: 'Matematik', topics: ['Kesirler', 'Ondalık Gösterim', 'Oran ve Orantı', 'Cebirsel İfadeler', 'Tam Sayılar', 'Veri Analizi', 'Çarpanlar ve Katlar', 'Üslü İfadeler'] },
+                { name: 'Türkçe', topics: ['Paragrafta Anlam', 'Sözcükte Anlam', 'Fiiller', 'Noktalama İşaretleri', 'Cümlede Anlam', 'Yazım Kuralları', 'Fiilimsiler'] },
+                { name: 'Fen Bilimleri', topics: ['Güneş Sistemi', 'Madde ve Isı', 'Kuvvet ve Hareket', 'Canlılar Dünyası', 'Hücre ve Bölünmeler', 'Mevsimler ve İklim'] },
+                { name: 'Sosyal Bilgiler', topics: ['Kültür ve Miras', 'Haritalar', 'Üretim ve Tüketim', 'Etkin Vatandaşlık', 'Bilim ve Teknoloji'] }
+            ],
+            high: [
+                { name: 'Matematik', topics: ['Fonksiyonlar', 'Denklemler', 'Trigonometri', 'Olasılık', 'Mantık', 'Kümeler', 'Logaritma', 'Limit', 'Türev', 'İntegral'] },
